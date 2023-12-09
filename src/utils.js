@@ -1,3 +1,15 @@
+export function playAnimIfNotPlaying(gameObj, animName) {
+  if(gameObj.curAnim() !== animName) gameObj.play(animName);
+}
+
+export function areAnyOfTheseKeysDown(k, keys) {
+  for (const key of keys) {
+    if(k.isKeyDown(key)) return true;
+  }
+
+  return false;
+}
+
 export function colorizeBackground(k, r, g, b) {
   k.add([
     k.rect(k.canvas.width, k.canvas.height),

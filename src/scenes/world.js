@@ -1,4 +1,4 @@
-import { generatePlayerComponent } from '../entities/player.js';
+import { generatePlayerComponent, setPlayerMovement } from '../entities/player.js';
 import { generateSlimeComponent } from '../entities/slime.js';
 import { colorizeBackground, drawBoundaries, drawTiles, fetchMapData } from '../utils.js';
 
@@ -16,10 +16,12 @@ export default async function world(k) {
   const layers = mapData.layers;
 
   for (const layer of layers) {
+
     if(layer.name === 'Boundaries') {
       drawBoundaries(k, map, layer);
       continue;
     }
+
     if(layer.name === 'SpawnPoints') {
       for (const object of layer.objects) {
         if(object.name === 'player') {
@@ -39,6 +41,24 @@ export default async function world(k) {
     drawTiles(k, map, layer, mapData.tileheight, mapData.tilewidth);
   }
 
+  // Manage Camera
   k.camScale(4);
+  // Set position of cam
   k.camPos(entities.player.worldPos());
+  // Follow player on map
+  k.onUpdate(() => {
+    if(entities.player.pos.dist(k.camPos())) {
+      k.tween(
+        k.camPos(), // init val
+        entities.player.worldPos(), // target val
+        0.15, // how long to update target val
+        (newPos) => {
+          k.camPos(newPos);
+        }, // intermediate val between init and target val
+        k.easings.linear // effect of movement
+      );
+    }
+  });
+
+  setPlayerMovement(k, entities.player);
 }
