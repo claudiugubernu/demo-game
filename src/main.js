@@ -1,19 +1,24 @@
 import k from './kboomContext.js';
 import world from './scenes/world.js';
+import { loadCustomSprite } from './utils.js';
 
-k.loadSprite(
+loadCustomSprite(
+  k, 
   "assets", 
-  "./assets/plains.png",
+  "./assets/topdownasset.png", 
   {
-    sliceX: 6,
-    sliceY: 12
+    sliceX: 39,
+    sliceY: 31,
+    anims: {
+      'player-idle-down': 936,
+      'slime-idle-down' : 858
+    }
   }
 );
 
 const scenes = {
   world
 }
-
 
 for (const sceneName  in scenes) {
   k.scene(sceneName, () => scenes[sceneName](k));

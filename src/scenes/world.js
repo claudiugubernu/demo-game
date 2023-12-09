@@ -1,13 +1,12 @@
-import { colorizeBackground, drawTiles, fetchMapData } from "../utils.js";
+import { generatePlayerComponent } from '../entities/player.js';
+import { generateSlimeComponent } from '../entities/slime.js';
+import { colorizeBackground, drawBoundaries, drawTiles, fetchMapData } from '../utils.js';
 
 const mapPath = './assets/maps/world.json';
 
-
 export default async function world(k) {
   colorizeBackground(k, 76, 170, 255);
-
   const mapData = await fetchMapData(mapPath);
-
   const map = k.add([k.pos(0, 0)]);
   const entities = {
     player: null,
@@ -15,18 +14,31 @@ export default async function world(k) {
   }
 
   const layers = mapData.layers;
+
   for (const layer of layers) {
     if(layer.name === 'Boundaries') {
-      // TODO
+      drawBoundaries(k, map, layer);
       continue;
     }
-
     if(layer.name === 'SpawnPoints') {
-      // TODO
+      for (const object of layer.objects) {
+        if(object.name === 'player') {
+          entities.player = map.add(generatePlayerComponent(k, k.vec2(object.x, object.y)));
+          continue;
+        }
+
+        if(object.name === 'slime') {
+          entities.slimes.push(map.add(generateSlimeComponent(k, k.vec2(object.x, object.y))));
+          continue;
+        }
+      }
       continue;
     }
 
     // DRAW TILES
     drawTiles(k, map, layer, mapData.tileheight, mapData.tilewidth);
   }
+
+  k.camScale(4);
+  k.camPos(entities.player.worldPos());
 }

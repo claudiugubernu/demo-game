@@ -11,10 +11,18 @@ export async function fetchMapData(mapPath) {
   return await initFetch.json();
 }
 
+export function loadCustomSprite(k, type, url, props) {
+  return k.loadSprite(
+    type, 
+    url,
+    props
+  );
+}
+
 export function drawTiles(k, map, layer, tileheight, tilewidth) {
   let numberOfDrawnTiles = 0;
   const tilePos = k.vec2(0, 0);
-
+  
   for (const tile of layer.data) {
     // we finished drawing the full row
     if(numberOfDrawnTiles % layer.width === 0) {
@@ -34,8 +42,30 @@ export function drawTiles(k, map, layer, tileheight, tilewidth) {
     map.add([
       k.sprite("assets", {frame: tile - 1}),
       k.pos(tilePos), 
-      k.offscreen()
+      k.offscreen(),
     ]);
 
+  }
+}
+
+export function generateColliderBoxComponents(k, width, height, pos, tag) {
+  return [
+    k.area({shape: new k.Rect(k.vec2(0), width, height)}),
+    k.pos(pos),
+    k.body({ isStatic: true}),
+    k.offscreen(),
+    tag
+  ]
+}
+
+export function drawBoundaries(k, map, layer) {
+  for (const object of layer.objects) {
+    map.add(generateColliderBoxComponents(
+      k, 
+      object.width, 
+      object.height,
+      k.vec2(object.x, object.y + 16),
+      object.name
+    ));
   }
 }
