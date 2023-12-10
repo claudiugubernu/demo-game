@@ -19,37 +19,54 @@ export function generatePlayerComponent(k, pos) {
   ];
 }
 
+function playerMovementLogic(
+  k, 
+  player, 
+  currentKey, 
+  expectedKey, 
+  excludedKeys, 
+  direction,
+  moveVec2,
+  ) {
+  if(currentKey === expectedKey && !areAnyOfTheseKeysDown(k, excludedKeys)) {
+    player.flipX = direction === "left" ? true : false;
+
+    switch(direction) {
+      case 'left':
+        player.flipX = true;
+        playAnimIfNotPlaying(player, 'player-side');
+        break;
+      case 'right': 
+        player.flipX = false;
+        playAnimIfNotPlaying(player, 'player-side');
+        break;
+      case 'up': 
+        playAnimIfNotPlaying(player, 'player-up');
+        break;
+      case 'down': 
+        playAnimIfNotPlaying(player, 'player-down');
+        break;
+      default:
+    }
+
+    player.move(moveVec2);
+    player.direction = direction;
+  }
+}
+
 export function setPlayerMovement(k, player) {
   k.onKeyDown((key) => {
-    if(['left', 'a'].includes(key) && !areAnyOfTheseKeysDown(k, ["up", "down", "w", "s"])) {
-      player.flipX = true;
-      playAnimIfNotPlaying(player, 'player-side');
-      player.move(-player.speed, 0);
-      player.direction = 'left';
-      return;
-    }
+    playerMovementLogic(k, player, key, "left", ["up", "down", "w", "s", "a"], "left", k.vec2(-player.speed, 0));
+    playerMovementLogic(k, player, key, "a", ["up", "down", "w", "s", "left"], "left" ,k.vec2(-player.speed, 0));
+
+    playerMovementLogic(k, player, key, "right", ["up", "down", "w", "s", "d"], "right", k.vec2(player.speed, 0));
+    playerMovementLogic(k, player, key, "d", ["up", "down", "w", "s", "right"], "right" ,k.vec2(player.speed, 0));
     
-    if(['right', 'd'].includes(key) && !areAnyOfTheseKeysDown(k, ["up", "down", "w", "s"])) {
-      player.flipX = false;
-      playAnimIfNotPlaying(player, 'player-side');
-      player.move(player.speed, 0);
-      player.direction = 'right';
-      return;
-    }
+    playerMovementLogic(k, player, key, "up", ["w"], "up", k.vec2(0, -player.speed));
+    playerMovementLogic(k, player, key, "w", ["up"], "up", k.vec2(0, -player.speed));
     
-    if(['up', 'w'].includes(key)) {
-      playAnimIfNotPlaying(player, 'player-up');
-      player.move(0, -player.speed);
-      player.direction = 'up';
-      return;
-    }
-    
-    if(['down', 's'].includes(key)) {
-      playAnimIfNotPlaying(player, 'player-down');
-      player.move(0, player.speed);
-      player.direction = 'down';
-      return;
-    }
+    playerMovementLogic(k, player, key, "down", [ "s"], "down", k.vec2(0, player.speed));
+    playerMovementLogic(k, player, key, "s", ["down"], "down", k.vec2(0, player.speed));
   });
 
   k.onKeyRelease(() => {
