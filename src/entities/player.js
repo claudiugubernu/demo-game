@@ -19,7 +19,7 @@ export function generatePlayerComponent(k, pos) {
   ];
 }
 
-function playerMovementLogic(
+function movePlayer(
   k, 
   player, 
   currentKey, 
@@ -56,17 +56,17 @@ function playerMovementLogic(
 
 export function setPlayerMovement(k, player) {
   k.onKeyDown((key) => {
-    playerMovementLogic(k, player, key, "left", ["up", "down", "w", "s", "a"], "left", k.vec2(-player.speed, 0));
-    playerMovementLogic(k, player, key, "a", ["up", "down", "w", "s", "left"], "left" ,k.vec2(-player.speed, 0));
+    movePlayer(k, player, key, "left", ["up", "down", "w", "s", "a"], "left", k.vec2(-player.speed, 0));
+    movePlayer(k, player, key, "a", ["up", "down", "w", "s", "left"], "left" ,k.vec2(-player.speed, 0));
 
-    playerMovementLogic(k, player, key, "right", ["up", "down", "w", "s", "d"], "right", k.vec2(player.speed, 0));
-    playerMovementLogic(k, player, key, "d", ["up", "down", "w", "s", "right"], "right" ,k.vec2(player.speed, 0));
+    movePlayer(k, player, key, "right", ["up", "down", "w", "s", "d"], "right", k.vec2(player.speed, 0));
+    movePlayer(k, player, key, "d", ["up", "down", "w", "s", "right"], "right" ,k.vec2(player.speed, 0));
     
-    playerMovementLogic(k, player, key, "up", ["w"], "up", k.vec2(0, -player.speed));
-    playerMovementLogic(k, player, key, "w", ["up"], "up", k.vec2(0, -player.speed));
+    movePlayer(k, player, key, "up", ["w"], "up", k.vec2(0, -player.speed));
+    movePlayer(k, player, key, "w", ["up"], "up", k.vec2(0, -player.speed));
     
-    playerMovementLogic(k, player, key, "down", [ "s"], "down", k.vec2(0, player.speed));
-    playerMovementLogic(k, player, key, "s", ["down"], "down", k.vec2(0, player.speed));
+    movePlayer(k, player, key, "down", [ "s"], "down", k.vec2(0, player.speed));
+    movePlayer(k, player, key, "s", ["down"], "down", k.vec2(0, player.speed));
   });
 
   k.onKeyRelease(() => {
