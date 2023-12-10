@@ -1,4 +1,6 @@
+import { dialog } from "../uiComponents/dialog.js";
 import { playAnimIfNotPlaying } from "../utils.js";
+import oldmanLines from '../content/oldmanDialogue.js';
 
 export function generateOldManComponents(k, pos) {
   return [
@@ -27,4 +29,8 @@ export async function startInteraction(k, oldman, player) {
       break;
     default:
   }
+
+  const NPCResponses = oldmanLines.english;
+
+  dialog(k, k.vec2(250, 500), NPCResponses[0]);
 }

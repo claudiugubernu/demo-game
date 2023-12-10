@@ -57,13 +57,14 @@ export default async function house(k) {
     k.go("world");
   });
 
-  // player interacts with oldman
+  // player interacts with oldman NPC
   entities.player.onCollide("oldman", () => {
     startInteraction(k, entities.oldman, entities.player);
   });
 
+  // player stops his interaction with oldman NPC
   entities.player.onCollideEnd("oldman", async () => {
-    await k.wait(1); // wait to return Oldman NPC to default state
+    await k.wait(1); // wait to return oldman NPC to default state
     playAnimIfNotPlaying(entities.oldman, 'oldman-down');
   });
 }
