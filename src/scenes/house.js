@@ -1,5 +1,6 @@
-import { colorizeBackground, fetchMapData, drawBoundaries, drawTiles } from "../utils.js";
+import { colorizeBackground, fetchMapData, drawBoundaries, drawTiles, playAnimIfNotPlaying } from "../utils.js";
 import { generatePlayerComponent, setPlayerMovement } from "../entities/player.js";
+import { generateOldManComponents, startInteraction } from "../entities/oldman.js";
 
 const mapPath = './assets/maps/house.json';
 
@@ -25,8 +26,14 @@ export default async function house(k) {
 
     if(layer.name === 'SpawnPoints') {
       for (const object of layer.objects) {
+
         if(object.name === 'player') {
           entities.player = map.add(generatePlayerComponent(k, k.vec2(object.x, object.y)));
+          continue;
+        }
+
+        if(object.name === "oldman") {
+          entities.oldman = map.add(generateOldManComponents(k, k.vec2(object.x, object.y)));
           continue;
         }
       }
@@ -48,5 +55,15 @@ export default async function house(k) {
   // player exits the house
   entities.player.onCollide("door-exit", () => {
     k.go("world");
+  });
+
+  // player interacts with oldman
+  entities.player.onCollide("oldman", () => {
+    startInteraction(k, entities.oldman, entities.player);
+  });
+
+  entities.player.onCollideEnd("oldman", async () => {
+    await k.wait(1); // wait to return Oldman NPC to default state
+    playAnimIfNotPlaying(entities.oldman, 'oldman-down');
   });
 }
