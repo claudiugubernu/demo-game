@@ -1,5 +1,5 @@
 import { generatePlayerComponent, setPlayerMovement } from '../entities/player.js';
-import { generateSlimeComponent } from '../entities/slime.js';
+import { generateSlimeComponent, setSlimeAI } from '../entities/slime.js';
 import { colorizeBackground, drawBoundaries, drawTiles, fetchMapData } from '../utils.js';
 
 const mapPath = './assets/maps/world.json';
@@ -61,4 +61,8 @@ export default async function world(k) {
   });
 
   setPlayerMovement(k, entities.player);
+
+  for (const slime of entities.slimes) {
+    setSlimeAI(k, slime);
+  }
 }
