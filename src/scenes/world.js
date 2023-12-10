@@ -60,9 +60,16 @@ export default async function world(k) {
     }
   });
 
+  // Init player movement
   setPlayerMovement(k, entities.player);
 
+  // init AI slime movement
   for (const slime of entities.slimes) {
     setSlimeAI(k, slime);
   }
+
+  // player enters the house
+  entities.player.onCollide("door-entrance", () => {
+    k.go("house");
+  });
 }

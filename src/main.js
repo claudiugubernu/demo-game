@@ -1,5 +1,6 @@
 import k from './kboomContext.js';
 import world from './scenes/world.js';
+import house from './scenes/house.js';
 import { loadCustomSprite } from './utils.js';
 
 loadCustomSprite(
@@ -47,7 +48,8 @@ loadCustomSprite(
 );
 
 const scenes = {
-  world
+  world,
+  house
 }
 
 for (const sceneName  in scenes) {
