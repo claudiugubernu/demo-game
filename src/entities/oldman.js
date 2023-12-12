@@ -1,7 +1,7 @@
 import { dialog } from "../uiComponents/dialog.js";
 import { playAnimIfNotPlaying } from "../utils.js";
 import oldmanLines from '../content/oldmanDialogue.js';
-import { gameState, oldManState } from "../state/stateManagers.js";
+import { gameState, oldManState, playerState } from "../state/stateManagers.js";
 
 export function generateOldManComponents(k, pos) {
   return [
@@ -30,6 +30,8 @@ export async function startInteraction(k, oldman, player) {
       break;
     default:
   }
+
+  playerState.setIsSwordEquipped(true);
 
   const NPCLines = oldmanLines[gameState.getLocale()];
 
