@@ -14,6 +14,7 @@ export function generateSlimeComponent(k, pos) {
     k.offscreen(),
     k.opacity(),
     k.state("idle", ["idle", ...directionalStates]),
+    k.health(3),
     {
       speed: 10,
       attackPower: 0.5,
@@ -21,7 +22,6 @@ export function generateSlimeComponent(k, pos) {
     "slime",
   ];
 }
-
 
 export function setSlimeAI(k, slime) {
 

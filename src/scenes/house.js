@@ -1,6 +1,7 @@
 import { colorizeBackground, fetchMapData, drawBoundaries, drawTiles, playAnimIfNotPlaying } from "../utils.js";
 import { generatePlayerComponent, setPlayerMovement } from "../entities/player.js";
 import { generateOldManComponents, startInteraction } from "../entities/oldman.js";
+import { healthBar } from "../uiComponents/healthBar.js";
 
 const mapPath = './assets/maps/house.json';
 
@@ -67,4 +68,6 @@ export default async function house(k) {
     await k.wait(1); // wait to return oldman NPC to default state
     playAnimIfNotPlaying(entities.oldman, 'oldman-down');
   });
+
+  healthBar(k);
 }

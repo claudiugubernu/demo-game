@@ -1,5 +1,5 @@
-import { gameState, playerState } from "../state/stateManagers.js";
-import { areAnyOfTheseKeysDown, playAnimIfNotPlaying } from "../utils.js";
+import { gameState, playerState } from '../state/stateManagers.js';
+import { areAnyOfTheseKeysDown, playAnimIfNotPlaying } from '../utils.js';
 
 export function generatePlayerComponent(k, pos) {
   return [
@@ -30,7 +30,7 @@ function movePlayer(
   moveVec2,
   ) {
   if(currentKey === expectedKey && !areAnyOfTheseKeysDown(k, excludedKeys)) {
-    player.flipX = direction === "left" ? true : false;
+    player.flipX = direction === 'left' ? true : false;
 
     switch(direction) {
       case 'left':
@@ -60,17 +60,17 @@ export function setPlayerMovement(k, player) {
 
     if(gameState.getFreezePlayer()) return;
 
-    movePlayer(k, player, key, "left", ["up", "down", "w", "s", "a"], "left", k.vec2(-player.speed, 0));
-    movePlayer(k, player, key, "a", ["up", "down", "w", "s", "left"], "left" ,k.vec2(-player.speed, 0));
+    movePlayer(k, player, key, 'left', ['up', 'down', 'w', 's', 'a'], 'left', k.vec2(-player.speed, 0));
+    movePlayer(k, player, key, 'a', ['up', 'down', 'w', 's', 'left'], 'left' ,k.vec2(-player.speed, 0));
 
-    movePlayer(k, player, key, "right", ["up", "down", "w", "s", "d"], "right", k.vec2(player.speed, 0));
-    movePlayer(k, player, key, "d", ["up", "down", "w", "s", "right"], "right" ,k.vec2(player.speed, 0));
+    movePlayer(k, player, key, 'right', ['up', 'down', 'w', 's', 'd'], 'right', k.vec2(player.speed, 0));
+    movePlayer(k, player, key, 'd', ['up', 'down', 'w', 's', 'right'], 'right' ,k.vec2(player.speed, 0));
     
-    movePlayer(k, player, key, "up", ["w"], "up", k.vec2(0, -player.speed));
-    movePlayer(k, player, key, "w", ["up"], "up", k.vec2(0, -player.speed));
+    movePlayer(k, player, key, 'up', ['w'], 'up', k.vec2(0, -player.speed));
+    movePlayer(k, player, key, 'w', ['up'], 'up', k.vec2(0, -player.speed));
     
-    movePlayer(k, player, key, "down", [ "s"], "down", k.vec2(0, player.speed));
-    movePlayer(k, player, key, "s", ["down"], "down", k.vec2(0, player.speed));
+    movePlayer(k, player, key, 'down', [ 's'], 'down', k.vec2(0, player.speed));
+    movePlayer(k, player, key, 's', ['down'], 'down', k.vec2(0, player.speed));
   });
 
   k.onKeyPress((key) => {
@@ -80,7 +80,7 @@ export function setPlayerMovement(k, player) {
 
     player.isAttacking = true;
     
-    if(k.get("swordHitBox").length === 0) {
+    if(k.get('swordHitBox').length === 0) {
       const swordHitBoxPosX = {
         left: player.worldPos().x - 2,
         right: player.worldPos().x + 10,
@@ -101,10 +101,10 @@ export function setPlayerMovement(k, player) {
           swordHitBoxPosX[player.direction],
           swordHitBoxPosY[player.direction],
           ),
-          "swordHitBox",
+          'swordHitBox',
       ]);
       k.wait(0.1, () => {
-        k.destroyAll("swordHitBox");
+        k.destroyAll('swordHitBox');
         if(player.direction === 'left' || player.direction === 'right') {
           playAnimIfNotPlaying(player, 'player-side');
           player.stop();

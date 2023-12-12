@@ -20,6 +20,7 @@ export default function playerGlobalStateManager() {
         hasKey = value;
       },
       getHasKey: () => hasKey,
+      getMaxHealth: () => maxHealth
     }
   }
 

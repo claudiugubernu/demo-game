@@ -47,6 +47,27 @@ loadCustomSprite(
   }
 );
 
+k.loadSpriteAtlas("./assets/topdownasset.png", {
+  "full-heart": {
+    x: 0,
+    y: 224,
+    width: 48,
+    height: 48,
+  },
+  "half-heart": {
+    x: 48,
+    y: 224,
+    width: 48,
+    height: 48,
+  },
+  "empty-heart": {
+    x: 96,
+    y: 224,
+    width: 48,
+    height: 48,
+  },
+});
+
 const scenes = {
   world,
   house

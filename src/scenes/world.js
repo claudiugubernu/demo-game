@@ -1,6 +1,7 @@
 import { generatePlayerComponent, setPlayerMovement } from '../entities/player.js';
 import { generateSlimeComponent, setSlimeAI } from '../entities/slime.js';
-import { colorizeBackground, drawBoundaries, drawTiles, fetchMapData } from '../utils.js';
+import { healthBar } from '../uiComponents/healthBar.js';
+import { colorizeBackground, drawBoundaries, drawTiles, fetchMapData, onAttacked, onCollideWithPlayer } from '../utils.js';
 
 const mapPath = './assets/maps/world.json';
 
@@ -66,10 +67,14 @@ export default async function world(k) {
   // init AI slime movement
   for (const slime of entities.slimes) {
     setSlimeAI(k, slime);
+    onAttacked(k, slime, entities.player);
+    onCollideWithPlayer(k, slime);
   }
 
   // player enters the house
   entities.player.onCollide("door-entrance", () => {
     k.go("house");
   });
+
+  healthBar(k);
 }
