@@ -1,3 +1,5 @@
+import { gameState } from "../state/stateManagers.js";
+
 async function displayLine(textContainer, line) {
   const charPrintSpeed = 30;//ms
 
@@ -12,6 +14,8 @@ async function displayLine(textContainer, line) {
 }
 
 export async function dialog(k, pos, content) {
+  gameState.setFreezePlayer(true);
+
   const dialogBox = k.add([
     k.rect(800, 200),
     k.pos(pos),
@@ -41,6 +45,7 @@ export async function dialog(k, pos, content) {
     if(!content[index]) {
       k.destroy(dialogBox);
       dialogKey.cancel();
+      gameState.setFreezePlayer(false);
       return
     }
 

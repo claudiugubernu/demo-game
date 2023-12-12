@@ -1,3 +1,4 @@
+import { gameState } from "../state/stateManagers.js";
 import { areAnyOfTheseKeysDown, playAnimIfNotPlaying } from "../utils.js";
 
 export function generatePlayerComponent(k, pos) {
@@ -56,6 +57,9 @@ function movePlayer(
 
 export function setPlayerMovement(k, player) {
   k.onKeyDown((key) => {
+
+    if(gameState.getFreezePlayer()) return;
+
     movePlayer(k, player, key, "left", ["up", "down", "w", "s", "a"], "left", k.vec2(-player.speed, 0));
     movePlayer(k, player, key, "a", ["up", "down", "w", "s", "left"], "left" ,k.vec2(-player.speed, 0));
 
