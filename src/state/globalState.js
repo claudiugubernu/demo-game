@@ -2,11 +2,16 @@ export default function globalStateManager() {
   let instance = null;
 
   function createInstance() {
+    let previousScene = null;
     let freezePlayer = false;
     let fontSize = 30;
     let locale = "english"
 
     return {
+      setPreviousScene(value) {
+        previousScene = value;
+      },
+      getPreviousScene: () => previousScene,
       setFreezePlayer(value) {
         freezePlayer = value;
       },

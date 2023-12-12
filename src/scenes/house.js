@@ -1,7 +1,8 @@
-import { colorizeBackground, fetchMapData, drawBoundaries, drawTiles, playAnimIfNotPlaying } from "../utils.js";
-import { generatePlayerComponent, setPlayerMovement } from "../entities/player.js";
-import { generateOldManComponents, startInteraction } from "../entities/oldman.js";
-import { healthBar } from "../uiComponents/healthBar.js";
+import { colorizeBackground, fetchMapData, drawBoundaries, drawTiles, playAnimIfNotPlaying } from '../utils.js';
+import { generatePlayerComponent, setPlayerMovement } from '../entities/player.js';
+import { generateOldManComponents, startInteraction } from '../entities/oldman.js';
+import { healthBar } from '../uiComponents/healthBar.js';
+import { gameState } from '../state/stateManagers.js';
 
 const mapPath = './assets/maps/house.json';
 
@@ -33,7 +34,7 @@ export default async function house(k) {
           continue;
         }
 
-        if(object.name === "oldman") {
+        if(object.name === 'oldman') {
           entities.oldman = map.add(generateOldManComponents(k, k.vec2(object.x, object.y)));
           continue;
         }
@@ -54,17 +55,18 @@ export default async function house(k) {
   setPlayerMovement(k, entities.player);
 
   // player exits the house
-  entities.player.onCollide("door-exit", () => {
-    k.go("world");
+  entities.player.onCollide('door-exit', () => {
+    gameState.setPreviousScene('house');
+    k.go('world');
   });
 
   // player interacts with oldman NPC
-  entities.player.onCollide("oldman", () => {
+  entities.player.onCollide('oldman', () => {
     startInteraction(k, entities.oldman, entities.player);
   });
 
   // player stops his interaction with oldman NPC
-  entities.player.onCollideEnd("oldman", async () => {
+  entities.player.onCollideEnd('oldman', async () => {
     await k.wait(1); // wait to return oldman NPC to default state
     playAnimIfNotPlaying(entities.oldman, 'oldman-down');
   });
