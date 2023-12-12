@@ -1,6 +1,7 @@
 import { dialog } from "../uiComponents/dialog.js";
 import { playAnimIfNotPlaying } from "../utils.js";
 import oldmanLines from '../content/oldmanDialogue.js';
+import { gameState, oldManState } from "../state/stateManagers.js";
 
 export function generateOldManComponents(k, pos) {
   return [
@@ -30,7 +31,19 @@ export async function startInteraction(k, oldman, player) {
     default:
   }
 
-  const NPCResponses = oldmanLines.english;
+  const NPCLines = oldmanLines[gameState.getLocale()];
 
-  dialog(k, k.vec2(250, 500), NPCResponses[0]);
+  let nbTalkedOldMan = oldManState.getNbTalkedOldMan();
+
+  // we want to have the offset here to keep the last line
+  // for when we finish the game
+  if(nbTalkedOldMan > NPCLines.length - 2) {
+    oldManState.setNbTalkedOldMan(1);
+    nbTalkedOldMan = oldManState.getNbTalkedOldMan();
+  } 
+
+  if(NPCLines[nbTalkedOldMan]) {
+    dialog(k, k.vec2(250, 500), NPCLines[nbTalkedOldMan]);
+    oldManState.setNbTalkedOldMan(nbTalkedOldMan + 1);
+  }
 }

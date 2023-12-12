@@ -26,7 +26,7 @@ export async function dialog(k, pos, content) {
     k.text("", {
       width: 700,
       lineSpacing: 15,
-      size: 24
+      size: gameState.getFontSize()
     }),
     k.color(27, 29, 52),
     k.pos(20, 40),
