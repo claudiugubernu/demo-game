@@ -122,9 +122,11 @@ export function onCollideWithPlayer(k, entity) {
     if(player.isAttacking) return;
 
     playerState.setHealth(playerState.getHealth() - entity.attackPower);
+
     k.destroyAll('healthContainer');
     healthBar(k, player);
     await blinkEffect(k, player);
+
     if(playerState.getHealth() <= 0) {
       playerState.setHealth(playerState.getMaxHealth());
       k.go('world');

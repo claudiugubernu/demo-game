@@ -5,7 +5,9 @@ export default function globalStateManager() {
     let previousScene = null;
     let freezePlayer = false;
     let fontSize = 30;
-    let locale = "english"
+    let locale = "english";
+    let isSonSaved = false;
+    let ghostDefeated = false;
 
     return {
       setPreviousScene(value) {
@@ -23,7 +25,15 @@ export default function globalStateManager() {
       setLocale(value) {
         locale = value
       },
-      getLocale: () => locale
+      getLocale: () => locale,
+      setIsSonSaved(value) {
+        isSonSaved = value
+      },
+      getIsSonSaved: () => isSonSaved,
+      setIsGhostDefeated(value) {
+        ghostDefeated = value
+      },
+      getIsGhostDefeated: () => ghostDefeated
     }
   }
 

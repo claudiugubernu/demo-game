@@ -1,8 +1,10 @@
-import { colorizeBackground, fetchMapData, drawBoundaries, drawTiles, playAnimIfNotPlaying } from "../utils.js";
+import { colorizeBackground, fetchMapData, drawBoundaries, drawTiles, playAnimIfNotPlaying, onAttacked, onCollideWithPlayer } from "../utils.js";
 import { generatePlayerComponent, setPlayerMovement } from "../entities/player.js";
-// import { generateGhostComponents, startInteraction } from "../entities/ghost.js";
 import { healthBar } from "../uiComponents/healthBar.js";
 import { gameState, playerState } from "../state/stateManagers.js";
+import { dialog } from "../uiComponents/dialog.js"
+import sonLines from "../content/sonDialogue.js";
+import { generateGhostComponents, onGhostDestroyed, setGhostAI } from "../entities/ghost.js";
 
 const mapPath = './assets/maps/dungeon.json';
 
@@ -34,10 +36,10 @@ export default async function dungeon(k) {
           continue;
         }
 
-        // if(object.name === "ghost") {
-        //   entities.ghost = map.add(generateGhostComponents(k, k.vec2(object.x, object.y)));
-        //   continue;
-        // }
+        if(object.name === "ghost") {
+          entities.ghost = map.add(generateGhostComponents(k, k.vec2(object.x, object.y)));
+          continue;
+        }
 
         if(object.name === 'prison-door') {
           map.add([
@@ -59,44 +61,83 @@ export default async function dungeon(k) {
     drawTiles(k, map, layer, mapData.tileheight, mapData.tilewidth);
   } 
 
-  // Manage Camera
-  k.camScale(4);
-  // Set position of cam
-  k.camPos(entities.player.worldPos());
-  // Follow player on map
-  k.onUpdate(() => {
-    if(entities.player.pos.dist(k.camPos())) {
-      k.tween(
-        k.camPos(), // init val
-        entities.player.worldPos(), // target val
-        0.15, // how long to update target val
-        (newPos) => {
-          k.camPos(newPos);
-        }, // intermediate val between init and target val
-        k.easings.linear // effect of movement
-      );
-    }
-  });
+  // Slide Camera
+
+  async function slideCam(k, range, duration) {
+    const currentCamPos = k.camPos();
+
+    await k.tween(
+      currentCamPos.y,
+      currentCamPos.y + range,
+      duration,
+      (newPosY) => k.camPos(currentCamPos.x, newPosY),
+      k.easings.linear,
+    )
+  }
 
   // Init player movement
   setPlayerMovement(k, entities.player);
 
-  // player exits the house
+  // player enters the dungeon boss
+  entities.player.onCollide("door-entrance", async () => {
+    gameState.setFreezePlayer(true);
+    await slideCam(k, -180, 1);
+    entities.player.pos.y -= 50;
+    gameState.setFreezePlayer(false);
+  });
+  
+  // player exists the dungeon boss
+  entities.player.onCollide("door-exit-2", async () => {
+    gameState.setFreezePlayer(true);
+    await slideCam(k, 180, 1);
+    entities.player.pos.y += 50;
+    gameState.setFreezePlayer(false);
+  });
+
+  // player exits the dungeon
   entities.player.onCollide("door-exit", () => {
     gameState.setPreviousScene('dungeon');
     k.go("world");
   });
+  
+  // player goes to the prison door
+  entities.player.onCollide("prison-door", async (prisonDoor) => {
+    await dialog(
+      k,
+      k.vec2(250, 500),
+      sonLines[gameState.getLocale()][playerState.getHasKey() ? 1 : 0],
+    );
+    
+    if(playerState.getHasKey()) {
+      prisonDoor.frame = 506;
+      prisonDoor.unuse("body");
+      prisonDoor.unuse("area");
+      
+      gameState.setIsSonSaved(true);
+    }
 
-  // player interacts with oldman NPC
-  entities.player.onCollide("oldman", () => {
-    startInteraction(k, entities.oldman, entities.player);
   });
 
-  // player stops his interaction with oldman NPC
-  entities.player.onCollideEnd("oldman", async () => {
-    await k.wait(1); // wait to return oldman NPC to default state
-    playAnimIfNotPlaying(entities.oldman, 'oldman-down');
+  // player defeats the ghost, gets the key, and talks to the son
+  entities.player.onCollide('son', async () => {
+    await dialog(
+      k,
+      k.vec2(250, 500),
+      sonLines[gameState.getLocale()][2],
+    )
   });
 
+  // if ghost exists bring in all logic
+  if(entities.ghost) {
+    setGhostAI(k, entities.ghost, entities.player);
+    onAttacked(k, entities.ghost, entities.player);
+    onCollideWithPlayer(k, entities.ghost);
+    onGhostDestroyed(k);
+  }
+
+  // Manage Camera
+  k.camScale(4);
+  // Use healthBar
   healthBar(k);
+
 }
