@@ -33,13 +33,11 @@ export default function mainMenu(k) {
   ]);
 
   k.onKeyPress("f", () => {
-    if (currentLocale !== "french") gameState.setLocale("french");
     if (currentLocale !== "english") gameState.setLocale("english");
     k.go("mainMenu");
   });
 
   k.onKeyPress("enter", () => {
-    if (gameState.getLocale() === "french") gameState.setFontSize(28);
     k.go("world");
   });
 }
