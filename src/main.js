@@ -2,6 +2,7 @@ import k from './kboomContext.js';
 import world from './scenes/world.js';
 import house from './scenes/house.js';
 import dungeon from './scenes/dungeon.js';
+import mainMenu from './scenes/mainMenu.js';
 import { loadCustomSprite } from './utils.js';
 
 loadCustomSprite(
@@ -72,11 +73,12 @@ k.loadSpriteAtlas("./assets/topdownasset.png", {
 const scenes = {
   world,
   house,
-  dungeon
+  dungeon,
+  mainMenu
 }
 
 for (const sceneName  in scenes) {
   k.scene(sceneName, () => scenes[sceneName](k));
 }
 
-k.go("world");
+k.go("mainMenu");

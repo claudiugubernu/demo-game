@@ -35,8 +35,6 @@ export async function startInteraction(k, oldman, player) {
 
   const NPCLines = oldmanLines[gameState.getLocale()];
 
-  console.log(gameState.getIsSonSaved());
-
   if(gameState.getIsSonSaved()) {
     await dialog(k, k.vec2(250, 500), NPCLines[3]);
     return;
